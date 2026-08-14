@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Сайт временной заглушки</title>
+  <style>
+    :root{--bg:#0b1220;--card:#0f1724;--accent:#4fc3f7;--text:#e6eef6}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg),#071025);color:var(--text)}
+    .card{background:rgba(255,255,255,0.03);padding:32px;border-radius:12px;box-shadow:0 6px 30px rgba(2,6,23,0.6);text-align:center;min-width:300px;max-width:720px}
+    h1{margin:0 0 8px;font-size:28px}
+    p{margin:0 0 20px;color:rgba(230,238,246,0.8)}
+    .timer{display:flex;gap:12px;justify-content:center;font-weight:600;font-size:20px}
+    .seg{background:rgba(255,255,255,0.04);padding:14px 18px;border-radius:8px;min-width:72px}
+    .label{display:block;font-size:12px;color:rgba(230,238,246,0.6);margin-top:6px}
+    .hint{margin-top:18px;font-size:13px;color:rgba(230,238,246,0.6)}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Сайт временно недоступен</h1>
+    <p>Мы скоро вернёмся — вот оставшееся время:</p>
+    <div id="timer" class="timer" aria-live="polite">
+      <div class="seg"><span id="days">0</span><span class="label">дн</span></div>
+      <div class="seg"><span id="hours">0</span><span class="label">час</span></div>
+      <div class="seg"><span id="minutes">0</span><span class="label">мин</span></div>
+      <div class="seg"><span id="seconds">0</span><span class="label">сек</span></div>
+    </div>
+    <div id="finished" class="hint" style="display:none">Время истекло.</div>
+    <div class="hint">Контакт: <a href="mailto:info@example.com" style="color:var(--accent)">info@example.com</a></div>
+  </div>
+
+  <script>
+    // Длительность в часах; поменяй значение, если нужно другое время
+    const DURATION_HOURS = 50;
+
+    // Целевое время — сейчас + DURATION_HOURS
+    const target = new Date(Date.now() + DURATION_HOURS * 3600 * 1000);
+
+    const $days = document.getElementById('days');
+    const $hours = document.getElementById('hours');
+    const $minutes = document.getElementById('minutes');
+    const $seconds = document.getElementById('seconds');
+    const $finished = document.getElementById('finished');
+
+    function update() {
+      const now = new Date();
+      let diff = Math.max(0, target - now);
+      if (diff === 0) {
+        document.getElementById('timer').style.display = 'none';
+        $finished.style.display = 'block';
+        return;
+      }
+      const s = Math.floor(diff / 1000);
+      const days = Math.floor(s / 86400);
+      const hours = Math.floor((s % 86400) / 3600);
+      const minutes = Math.floor((s % 3600) / 60);
+      const seconds = s % 60;
+      $days.textContent = days;
+      $hours.textContent = String(hours).padStart(2, '0');
+      $minutes.textContent = String(minutes).padStart(2, '0');
+      $seconds.textContent = String(seconds).padStart(2, '0');
+    }
+
+    update();
+    setInterval(update, 1000);
+  </script>
+</body>
+</html>
